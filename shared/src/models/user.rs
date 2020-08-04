@@ -1,13 +1,15 @@
 use crate::models::auth::AuthData;
-
+use serde::{Deserialize, Serialize};
+#[derive(Debug, Deserialize, Serialize, Default)]
 pub struct User {
-    first_name: String,
-    last_name: String,
-    email: String,
+    pub first_name: String,
+    pub last_name: String,
+    pub email: String,
+    pub username: String,
 }
 
 pub struct LoggedUser {
-    first_name: String,
-    last_name: String,
-    username: String,
+    pub first_name: String,
+    pub last_name: String,
+    pub username: String,
 }
