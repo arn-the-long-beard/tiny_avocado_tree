@@ -1,0 +1,26 @@
+[package]
+name = "server"
+version = "0.1.0"
+authors = ["arn-the-long-beard <arn.menant@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = { version = "2.0", features = ["openssl"] }
+actix-rt = "1.0.0"
+actix-identity = "0.2.0"
+actix-files = "0.2.2"
+env_logger = "0.7.1"
+dotenv = "0.15.0"
+openssl = { version = "0.10", features = ["v110"] }
+serde = "1.0.106"
+serde_json = "1.0.51"
+chrono = { version = "0.4.6", features = ["serde"] }
+argonautica = { version = "0.2", features = ["serde", "simd"] }
+uuid = { version = "0.7", features = ["serde", "v4"] }
+derive_more = "0.99.5"
+lazy_static = "1.4.0"
+arangors =  { git = "https://github.com/fMeow/arangors.git" , branch ="develop" }
+
+shared = { path = "../shared" }
