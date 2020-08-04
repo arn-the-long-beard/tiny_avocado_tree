@@ -3,7 +3,8 @@
 use seed::{prelude::*, *};
 use shared::models::auth::AuthData;
 use shared::models::user::{LoggedUser, User};
-
+extern crate heck;
+use heck::{CamelCase, SnakeCase};
 // use shared::User;
 mod pages;
 
@@ -37,8 +38,8 @@ struct Model {
 // ------ State for component ------
 #[derive(Default)]
 pub struct State {
-    pub logged_user: Option<LoggedUser>,
-    pub register_data: Option<User>,
+    pub logged_user: pages::register::Model,
+    pub register_data: pages::register::Model,
     pub auth_data: Option<AuthData>,
 }
 
@@ -61,6 +62,15 @@ impl Route {
             Some(_) => Self::NotFound,
         }
     }
+
+    fn is_active(&self, path: String) -> bool {
+        match &self {
+            Route::Home => path.eq("Home"),
+            Route::Login => path.eq("Login"),
+            Route::Register => path.eq("Register"),
+            Route::NotFound => path.eq("404"),
+        }
+    }
 }
 
 // ------ ------
@@ -70,14 +80,12 @@ impl Route {
 struct_urls!();
 /// Construct url injected in the web browser with path
 impl<'a> Urls<'a> {
-    pub fn home(self) -> Url {
-        self.base_url()
-    }
-    pub fn login(self) -> Url {
-        self.base_url().add_path_part(LOGIN)
-    }
-    pub fn register(self) -> Url {
-        self.base_url().add_path_part(REGISTER)
+    pub fn build_url(self, path: &str) -> Url {
+        if path.eq("Home") {
+            self.base_url()
+        } else {
+            self.base_url().add_path_part(path.to_snake_case())
+        }
     }
 }
 
@@ -113,7 +121,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 /// View function which renders stuff to html
 fn view(model: &Model) -> impl IntoNodes<Msg> {
     vec![
-        header(&model.base_url),
+        header(&model.base_url, &model.page),
         match &model.page {
             Route::Home => div![div!["Welcome home!"],],
             // Page::Admin(admin_model) => page::admin::view(admin_model, &model.ctx),
@@ -126,27 +134,24 @@ fn view(model: &Model) -> impl IntoNodes<Msg> {
     ]
 }
 
-fn header(base_url: &Url) -> Node<Msg> {
+fn header(base_url: &Url, page: &Route) -> Node<Msg> {
     ul![
-        li![a![
-            attrs! { At::Href => Urls::new(base_url).home() },
-            "Home",
-        ]],
-        li![a![
-            attrs! { At::Href => Urls::new(base_url).login() },
-            "Login",
-        ]],
-        li![a![
-            attrs! { At::Href => Urls::new(base_url).register() },
-            "Register",
-        ]],
-        // li![a![
-        //     attrs! { At::Href => Urls::new(base_url).admin_urls().report_urls().default() },
-        //     "Report",
-        // ]],
+        route(base_url, page, "Home"),
+        route(base_url, page, "Login"),
+        route(base_url, page, "Register"),
     ]
 }
-
+/// Render a route
+fn route(base_url: &Url, page: &Route, path: &str) -> Node<Msg> {
+    li![a![
+        C![
+            "route",
+            IF!(page.is_active( path.to_string() ) => "active-route" )
+        ],
+        attrs! { At::Href => Urls::new(base_url).build_url(path) },
+        path,
+    ]]
+}
 // ------ ------
 //     Start
 // ------ ------
