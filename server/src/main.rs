@@ -41,10 +41,8 @@ async fn main() -> std::io::Result<()> {
                     .secure(false), // this can only be true if you have https todo put to true in production
             ))
             .data(web::JsonConfig::default().limit(4096))
-            .service(Files::new("/pkg", "../client/pkg"))
-            .default_service(web::get().to(index))
     })
     .workers(*init.workers());
 
-    server.bind_openssl("127.0.0.1:8000", builder)?.run().await
+    server.bind_openssl("127.0.0.1:8001", builder)?.run().await
 }
