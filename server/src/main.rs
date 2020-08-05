@@ -12,7 +12,7 @@ use std::sync::Arc;
 
 mod auth;
 mod models;
-mod user;
+
 mod utils;
 
 async fn index() -> Result<NamedFile> {
@@ -41,8 +41,22 @@ async fn main() -> std::io::Result<()> {
                     .secure(false), // this can only be true if you have https todo put to true in production
             ))
             .data(web::JsonConfig::default().limit(4096))
+            .service(
+                web::scope("/api")
+                    // todo make invitation system later
+                    // .service(
+                    //     web::resource("/register/{invitation_id}")
+                    //         .route(web::post().to(register_handler::register_user)),
+                    // )
+                    // .service(
+                    //     web::resource("/register").route(web::post().to(register::register_user)),
+                    // )
+                    .default_service(web::route().to(web::HttpResponse::NotFound)),
+            )
+            .service(Files::new("/pkg", "../client/pkg"))
+            .default_service(web::get().to(index))
     })
     .workers(*init.workers());
 
-    server.bind_openssl("127.0.0.1:8001", builder)?.run().await
+    server.bind_openssl("127.0.0.1:8000", builder)?.run().await
 }
