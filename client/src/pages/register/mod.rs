@@ -33,19 +33,24 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 /// view of register page
 pub fn view(model: &Model) -> Node<Msg> {
     div![form![
+        attrs! {
+        At::Action => "/api/register",
+        At::Method=> "/post"
+        },
         label![attrs! { At::For => "username"}, "Username"],
         input![
             id!("username"),
             attrs! {
-
-                At::Name => "username",
-                At::Type=> "text"
-            }
+            At::Required => true,
+            At::Name => "username",
+            At::Type=> "text"
+                    }
         ],
         label![attrs! { At::For => "email"}, "Email"],
         input![
             id!("email"),
             attrs! {
+                At::Required => true,
                 At::Value => model.email,
                 At::Name => "email",
                 At::Type=> "email"
@@ -56,6 +61,7 @@ pub fn view(model: &Model) -> Node<Msg> {
         input![
             id!("first_name"),
             attrs! {
+                At::Required => true,
                 At::Name => "first_name",
                 At::Type=> "text"
             }
@@ -65,10 +71,15 @@ pub fn view(model: &Model) -> Node<Msg> {
         input![
             id!("last_name"),
             attrs! {
+                At::Required => true,
                 At::Name => "last_name",
                 At::Type=> "text"
             }
         ],
         br![],
+        input![attrs! {
+            At::Type=> "submit" ,
+            At::Value=> "Register" ,
+        }],
     ]]
 }
