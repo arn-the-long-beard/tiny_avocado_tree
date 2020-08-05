@@ -43,7 +43,8 @@ async fn main() -> std::io::Result<()> {
             .data(web::JsonConfig::default().limit(4096))
             .service(Files::new("/pkg", "../client/pkg"))
             .default_service(web::get().to(index))
-    });
+    })
+    .workers(*init.workers());
 
     server.bind_openssl("127.0.0.1:8000", builder)?.run().await
 }

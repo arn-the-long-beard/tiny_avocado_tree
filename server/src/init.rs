@@ -13,6 +13,7 @@ pub struct Init {
     db_url: String,
     db_admin_user: String,
     db_password_user: String,
+    workers: usize,
 }
 /// Init fails if one fails
 impl Init {
@@ -31,9 +32,15 @@ impl Init {
             db_url: std::env::var("DB_URL").unwrap(),
             db_admin_user: std::env::var("DB_ADMIN").unwrap(),
             db_password_user: std::env::var("DB_PASSWORD").unwrap(),
+            workers: std::env::var("WORKERS")
+                .unwrap_or_else(|_| "1".to_string())
+                .parse()
+                .unwrap(),
         }
     }
-
+    pub fn workers(&self) -> &usize {
+        &self.workers
+    }
     pub fn domain(&self) -> &str {
         &self.domain
     }
