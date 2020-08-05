@@ -18,11 +18,11 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
         Msg::Register => {}
         Msg::Clear => {}
-        Msg::PasswordChanged(text) => log!(text),
-        Msg::UsernameChanged(text) => log!(text),
-        Msg::FirstNameChanged(text) => log!(text),
-        Msg::LastNameChanged(text) => log!(text),
-        Msg::EmailChanged(text) => log!(text),
+        Msg::PasswordChanged(text) => model.credentials.set_password(text),
+        Msg::UsernameChanged(text) => model.credentials.set_username(text),
+        Msg::FirstNameChanged(text) => model.first_name = text,
+        Msg::LastNameChanged(text) => model.last_name = text,
+        Msg::EmailChanged(text) => model.credentials.set_email(text),
     }
 }
 
@@ -39,7 +39,7 @@ pub fn view(model: &Model) -> Node<Msg> {
             id!("username"),
             attrs! {
             At::Required => true,
-            At::Name => model.credentials.username,
+            At::Value=> model.credentials.username(),
             At::MinLength=> "5",
             At::Name => "username",
             At::MaxLength=> "15",
@@ -52,13 +52,13 @@ pub fn view(model: &Model) -> Node<Msg> {
             id!("email"),
             attrs! {
             At::Required => true,
-            At::Value => model.credentials.email,
+            At::Value => model.credentials.email(),
             At::MinLength=> "5",
             At::MaxLength=> "15"
             At::Name => "email",
             At::Type=> "email"
                },
-            input_ev(Ev::Input, Msg::FirstNameChanged),
+            input_ev(Ev::Input, Msg::EmailChanged),
         ],
         label![attrs! { At::For => "password"}, "Password"],
         input![
@@ -79,8 +79,8 @@ pub fn view(model: &Model) -> Node<Msg> {
             attrs! {
             At::Required => true,
             At::Name => "first_name",
-            At::Type=> "text"
-
+            At::Type=> "text",
+            At::Value=> model.first_name,
                    },
             input_ev(Ev::Input, Msg::FirstNameChanged),
         ],
@@ -93,6 +93,7 @@ pub fn view(model: &Model) -> Node<Msg> {
             At::MaxLength=> "15"
             At::Name => "last_name",
             At::Type=> "text"
+            At::Value=> model.last_name,
                    },
             input_ev(Ev::Input, Msg::LastNameChanged),
         ],
