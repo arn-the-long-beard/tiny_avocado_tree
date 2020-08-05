@@ -1,3 +1,4 @@
+mod handlers;
 mod init;
 
 use actix_identity::{CookieIdentityPolicy, IdentityService};
