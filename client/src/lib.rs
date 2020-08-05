@@ -1,10 +1,8 @@
 #![allow(clippy::must_use_candidate)]
 
 use seed::{prelude::*, *};
-use shared::models::auth::AuthData;
-use shared::models::user::{LoggedUser, User};
 extern crate heck;
-use heck::{CamelCase, SnakeCase};
+use heck::SnakeCase;
 // use shared::User;
 mod pages;
 
@@ -40,7 +38,7 @@ struct Model {
 pub struct State {
     pub logged_user: pages::register::Model,
     pub register_data: pages::register::Model,
-    pub auth_data: Option<AuthData>,
+    pub auth_data: pages::login::Model,
 }
 
 /// Page Struct regroups all the possible root navigate on your App
@@ -53,6 +51,7 @@ enum Route {
     NotFound,
 }
 /// Here we manage the navigation depending of the url path
+///
 impl Route {
     fn init(mut url: Url) -> Self {
         match url.next_path_part() {
