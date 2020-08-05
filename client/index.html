@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="utf-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
     <title>Simple Dashboard</title>
     <style>
 
@@ -12,21 +14,21 @@
             font-family: monospace;
         }
 
-        input , label{
-            padding:5px;
+        input, label {
+            padding: 5px;
             margin: 5px;
         }
 
-       li{
-            padding:2px;
+        li {
+            padding: 2px;
             margin: 2px;
         }
 
         input {
-            border:  1px solid lightskyblue;
+            border: 1px solid lightskyblue;
         }
 
-        form {
+        form, fieldset {
             margin: auto;
             width: 50%;
             display: flex;
@@ -34,13 +36,60 @@
             align-items: center;
         }
 
+        fieldset {
+            margin: 15px;
+            padding-bottom: 15px;
+        }
+
         .route {
-            padding:2px;
+            padding: 2px;
             margin: 2px;
         }
 
         .active-route {
             background: lightskyblue;
+        }
+
+
+        .power {
+            transition-timing-function: ease-in-out;
+            height: 25px;
+            transition: width 0.5s;
+        }
+
+        .power {
+            margin: 5px;
+            transition: background-color 0.5s ease;
+        }
+
+        .no-power {
+            background: red;
+        }
+
+
+        .baby-power {
+            background: orangered;
+        }
+
+        .low-power {
+            background: orange;
+        }
+
+        .medium-power {
+            background: yellow;
+        }
+
+        .high-power {
+            background: lawngreen;
+        }
+
+        .max-power {
+            background: seagreen;
+        }
+
+        .tiny−avocado-icons {
+            padding: 5px;
+            margin: 5px;
         }
 
     </style>
@@ -50,6 +99,7 @@
 <section id="app"></section>
 <script type="module">
     import init from '/pkg/package.js';
+
     init('/pkg/package_bg.wasm');
 </script>
 </body>
