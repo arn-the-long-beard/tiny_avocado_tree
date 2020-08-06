@@ -25,6 +25,8 @@ impl<T> Default for RequestState<T> {
 /// Action on register page
 pub enum Msg {
     Register,
+    RegisterFailed { message: String, code: String },
+    RegisterSucceed(User),
     PasswordChanged(String),
     UsernameChanged(String),
     EmailChanged(String),
@@ -38,37 +40,29 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::Register => {
             log!("submit");
             model.request_state = RequestState::IsPending(true);
+            let request = Request::new("/api/register")
+                .method(Method::Post)
+                .json(&model.user)
+                .expect("Serialization failed");
+
+            orders.perform_cmd(async {
+                let response = fetch(request).await.expect("HTTP request failed");
+
+                if response.status().is_ok() {
+                    Msg::RegisterSucceed(response.json().await.unwrap())
+                } else {
+                    Msg::RegisterFailed {
+                        message: response.text().await.unwrap(),
+                        code: response.status().code.to_string(),
+                    }
+                }
+            });
         }
         Msg::Clear => {}
         Msg::PasswordChanged(text) => {
             let text = text.trim();
-            let mut password_power = 0;
             model.user.credentials.set_password(text.to_string());
-
-            let pwd = model.user.credentials.password();
-            let characters = pwd.chars();
-            let compared_characteres = characters.clone();
-            password_power = characters.clone().count() as u8;
-            for c in characters {
-                if c.is_numeric() {
-                    password_power += 1;
-                }
-                if c.is_uppercase() {
-                    password_power += 1;
-                }
-                if c.is_ascii_punctuation() {
-                    password_power += 2;
-                }
-                let count = compared_characteres.clone().filter(|o| c.eq(o)).count();
-                if count == 1 {
-                    password_power += 4;
-                } else if (count > 1) & (count < 3) {
-                    password_power += 2;
-                } else {
-                    password_power -= 1;
-                }
-            }
-            model.password_power = Power::rank(password_power)
+            model.password_power = Power::rank(calculate_power(model));
         }
         Msg::UsernameChanged(text) => model.user.credentials.set_username(text.trim().to_string()),
         Msg::FirstNameChanged(text) => model.user.first_name = text.trim().to_string(),
@@ -76,7 +70,40 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::EmailChanged(text) => {
             model.user.credentials.set_email(text.trim().to_string());
         }
+        Msg::RegisterFailed { message, code } => {
+            model.request_state = RequestState::Failed { message, code }
+        }
+        Msg::RegisterSucceed(user) => model.request_state = RequestState::Success(user),
     }
+}
+
+fn calculate_power(model: &mut Model) -> u8 {
+    let mut password_power = 0;
+    let pwd = model.user.credentials.password();
+    let characters = pwd.chars();
+    let compared_characteres = characters.clone();
+    password_power = characters.clone().count() as u8;
+    for c in characters {
+        if c.is_numeric() {
+            password_power += 1;
+        }
+        if c.is_uppercase() {
+            password_power += 1;
+        }
+        if c.is_ascii_punctuation() {
+            password_power += 2;
+        }
+        let count = compared_characteres.clone().filter(|o| c.eq(o)).count();
+        if count == 1 {
+            password_power += 4;
+        } else if (count > 1) & (count < 3) {
+            password_power += 2;
+        } else {
+            password_power -= 1;
+        }
+    }
+
+    password_power
 }
 
 /// view of register page
@@ -86,7 +113,10 @@ pub fn view(model: &Model) -> Node<Msg> {
             p![format!("Thank you for {} ", user.credentials.username())]
         }
         RequestState::IsPending(status) => form(model, status),
-        RequestState::Failed { message, code } => p![format!("En error happened {} ", message)],
+        RequestState::Failed { message, code } => p![format!(
+            "En error happened {} with the code {}",
+            message, code
+        )],
     }
 }
 
