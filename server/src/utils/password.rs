@@ -2,10 +2,6 @@ use argonautica::{Hasher, Verifier};
 
 use crate::models::error::ServiceError;
 
-// todo make a good key later, maybe generate it randomly
-lazy_static::lazy_static! {
-pub  static ref SECRET_KEY: String = std::env::var("SECRET_KEY").unwrap_or_else(|_| "0123".repeat(8));
-}
 // todo make code for production because of warning bellow
 // WARNING THIS IS ONLY FOR DEMO PLEASE DO MORE RESEARCH FOR PRODUCTION USE
 pub fn hash_password(password: &str, secret: &str) -> Result<String, ServiceError> {

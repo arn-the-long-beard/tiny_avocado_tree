@@ -1,6 +1,7 @@
 mod handlers;
 mod init;
 
+use crate::handlers::register;
 use crate::init::Init;
 use actix_files::{Files, NamedFile};
 use actix_identity::{CookieIdentityPolicy, IdentityService};
@@ -29,15 +30,15 @@ async fn main() -> std::io::Result<()> {
     let server = HttpServer::new(move || {
         App::new()
             .data(conn.clone())
-            .wrap(Logger::new("%r %s %D ms %a"))
             .wrap(IdentityService::new(
-                CookieIdentityPolicy::new(utils::password::SECRET_KEY.as_bytes())
+                CookieIdentityPolicy::new(&[0; 32])
                     .name("auth")
                     .path("/")
                     .domain(domain.as_str())
                     .max_age_time(chrono::Duration::days(1))
                     .secure(false), // this can only be true if you have https todo put to true in production
             ))
+            .wrap(Logger::new("%r %s %D ms %a"))
             .data(web::JsonConfig::default().limit(4096))
             .service(
                 web::scope("/api")
@@ -46,9 +47,9 @@ async fn main() -> std::io::Result<()> {
                     //     web::resource("/register/{invitation_id}")
                     //         .route(web::post().to(register_handler::register_user)),
                     // )
-                    // .service(
-                    //     web::resource("/register").route(web::post().to(register::register_user)),
-                    // )
+                    .service(
+                        web::resource("/register").route(web::post().to(register::register_user)),
+                    )
                     .default_service(web::route().to(web::HttpResponse::NotFound)),
             )
             .service(Files::new("/pkg", "../client/pkg"))
