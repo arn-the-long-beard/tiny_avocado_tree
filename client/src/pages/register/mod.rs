@@ -1,3 +1,4 @@
+use crate::request::RequestState;
 use seed::{prelude::*, *};
 use shared::models::power::Power;
 use shared::models::user::User;
@@ -9,17 +10,6 @@ pub struct Model {
     request_state: RequestState<User>,
 }
 
-pub enum RequestState<T> {
-    Success(T),
-    Failed { message: String, code: String },
-    IsPending(bool),
-}
-
-impl<T> Default for RequestState<T> {
-    fn default() -> Self {
-        RequestState::IsPending(false)
-    }
-}
 /// Action on register page
 pub enum Msg {
     Register,
