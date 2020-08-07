@@ -112,7 +112,7 @@ fn form(model: &Model, status: &bool) -> Node<Msg> {
                 At::Value=> user.credentials.username(),
                 At::MinLength=> "5",
                 At::Name => "username",
-                At::MaxLength=> "15",
+                At::MaxLength=> "25",
                 At::Type=> "text"
                         },
                 input_ev(Ev::Input, Msg::UsernameChanged),
@@ -124,7 +124,7 @@ fn form(model: &Model, status: &bool) -> Node<Msg> {
                 At::Required => true,
                 At::Value => user.credentials.email(),
                 At::MinLength=> "5",
-                At::MaxLength=> "20"
+                At::MaxLength=> "25"
                 At::Name => "email",
                 At::Type=> "email"
                    },
