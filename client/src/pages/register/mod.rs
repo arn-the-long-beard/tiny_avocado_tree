@@ -1,8 +1,6 @@
 use seed::{prelude::*, *};
+use shared::models::power::Power;
 use shared::models::user::User;
-
-pub mod power;
-use power::Power;
 
 #[derive(Default)]
 pub struct Model {
@@ -62,7 +60,9 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::PasswordChanged(text) => {
             let text = text.trim();
             model.user.credentials.set_password(text.to_string());
-            model.password_power = Power::rank(calculate_power(model));
+            model.password_power = Power::rank(Power::calculate_power(
+                model.user.credentials.password().to_string(),
+            ));
         }
         Msg::UsernameChanged(text) => model.user.credentials.set_username(text.trim().to_string()),
         Msg::FirstNameChanged(text) => model.user.first_name = text.trim().to_string(),
@@ -75,35 +75,6 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         }
         Msg::RegisterSucceed(user) => model.request_state = RequestState::Success(user),
     }
-}
-
-fn calculate_power(model: &mut Model) -> u8 {
-    let mut password_power = 0;
-    let pwd = model.user.credentials.password();
-    let characters = pwd.chars();
-    let compared_characteres = characters.clone();
-    password_power = characters.clone().count() as u8;
-    for c in characters {
-        if c.is_numeric() {
-            password_power += 1;
-        }
-        if c.is_uppercase() {
-            password_power += 1;
-        }
-        if c.is_ascii_punctuation() {
-            password_power += 2;
-        }
-        let count = compared_characteres.clone().filter(|o| c.eq(o)).count();
-        if count == 1 {
-            password_power += 4;
-        } else if (count > 1) & (count < 3) {
-            password_power += 2;
-        } else {
-            password_power -= 1;
-        }
-    }
-
-    password_power
 }
 
 /// view of register page

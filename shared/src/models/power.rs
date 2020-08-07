@@ -1,4 +1,3 @@
-
 pub enum Power {
     NoPower,
     BabyPower(u8),
@@ -53,5 +52,34 @@ impl Power {
             Power::HighPower(pw) => pw,
             Power::MaxPower(pw) => pw,
         }
+    }
+    /// Calculate the power and return a maximum value of 255.
+    /// # Note sure what would happen if we get more than 255
+    pub fn calculate_power(text: String) -> u8 {
+        let mut power = 0;
+        let pwd = text;
+        let characters = pwd.chars();
+        let compared_characteres = characters.clone();
+        power = characters.clone().count() as u8;
+        for c in characters {
+            if c.is_numeric() {
+                power += 1;
+            }
+            if c.is_uppercase() {
+                power += 1;
+            }
+            if c.is_ascii_punctuation() {
+                power += 2;
+            }
+            let count = compared_characteres.clone().filter(|o| c.eq(o)).count();
+            if count == 1 {
+                power += 4;
+            } else if (count > 1) & (count < 3) {
+                power += 2;
+            } else {
+                power -= 1;
+            }
+        }
+        power
     }
 }
