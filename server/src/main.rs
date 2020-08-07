@@ -1,14 +1,11 @@
 mod handlers;
 mod init;
 
+use crate::init::Init;
+use actix_files::{Files, NamedFile};
 use actix_identity::{CookieIdentityPolicy, IdentityService};
 use actix_web::middleware::Logger;
 use actix_web::{web, App, FromRequest, HttpRequest, HttpServer, Responder, Result};
-use env_logger::Env;
-
-use crate::init::Init;
-use actix_files::{Files, NamedFile};
-use arangors::Connection;
 use std::sync::Arc;
 
 mod auth;
@@ -23,7 +20,7 @@ async fn index() -> Result<NamedFile> {
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     let init = Init::new();
-    let builder = init.build_ssl();
+    let builder = init.build_ssl_config();
     let domain = init.domain().to_string();
 
     let conn = init.connect_db().await;
@@ -58,6 +55,5 @@ async fn main() -> std::io::Result<()> {
             .default_service(web::get().to(index))
     })
     .workers(*init.workers());
-
-    server.bind_openssl("127.0.0.1:8000", builder)?.run().await
+    server.bind_rustls("127.0.0.1:8000", builder)?.run().await
 }

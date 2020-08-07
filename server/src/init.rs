@@ -1,8 +1,9 @@
-use crate::models::error::ServiceError;
 use arangors::Connection;
 use env_logger::Env;
-use openssl::error::ErrorStack;
-use openssl::ssl::{SslAcceptor, SslAcceptorBuilder, SslFiletype, SslMethod};
+use rustls::internal::pemfile::{certs, pkcs8_private_keys};
+use rustls::{NoClientAuth, ServerConfig};
+use std::fs::File;
+use std::io::BufReader;
 
 /// Struct to init variable for config for server
 #[derive(Default)]
@@ -44,22 +45,22 @@ impl Init {
     pub fn domain(&self) -> &str {
         &self.domain
     }
-    pub fn build_ssl(&self) -> SslAcceptorBuilder {
-        let builder_res = SslAcceptor::mozilla_intermediate(SslMethod::tls());
+    pub fn build_ssl_config(&self) -> ServerConfig {
+        // todo this looks like good stuff but need to spend more time to make better config
+        let mut config = ServerConfig::new(NoClientAuth::new());
+        let cert_file = &mut BufReader::new(File::open(&self.ssl_public_certificate).unwrap());
+        let key_file = &mut BufReader::new(File::open(&self.ssl_private_key).unwrap());
 
-        if builder_res.is_err() {
-            panic!("Error during ssl init")
+        let cert_chain = certs(cert_file).unwrap();
+        let mut keys = pkcs8_private_keys(key_file).unwrap();
+
+        let result = config.set_single_cert(cert_chain, keys.remove(0));
+
+        if result.is_err() {
+            panic!(result.unwrap_err());
         }
-        let mut builder = builder_res.unwrap();
 
-        builder
-            .set_private_key_file(&self.ssl_private_key, SslFiletype::PEM)
-            .unwrap();
-        builder
-            .set_certificate_chain_file(&self.ssl_public_certificate)
-            .unwrap();
-
-        builder
+        config
     }
 
     pub async fn connect_db(&self) -> Connection {
