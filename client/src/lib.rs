@@ -1,5 +1,4 @@
-#![allow(clippy::must_use_candidate)]
-
+mod request;
 use seed::{prelude::*, *};
 extern crate heck;
 use heck::SnakeCase;
