@@ -71,7 +71,7 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 pub fn view(model: &Model) -> Node<Msg> {
     match &model.request_state {
         RequestState::Success(user) => div![
-            C!["welcome"],
+            C!["centred"],
             p![format!(
                 "Thank you for your registration {} {}. :)",
                 user.first_name, user.last_name
@@ -89,10 +89,10 @@ pub fn view(model: &Model) -> Node<Msg> {
             ]
         ],
         RequestState::IsPending(status) => form(model, status),
-        RequestState::Failed { message, code } => p![format!(
-            "En error happened {} with the code {}",
-            message, code
-        )],
+        RequestState::Failed { message, code } => p![
+            C!["centred"],
+            format!("An error happened {} with the code {}", message, code)
+        ],
     }
 }
 
