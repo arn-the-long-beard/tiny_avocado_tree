@@ -30,6 +30,7 @@ pub enum Msg {
     EmailChanged(String),
     FirstNameChanged(String),
     LastNameChanged(String),
+    //todo implement a clear for the form ?
     Clear,
 }
 /// Update on register pages
