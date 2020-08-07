@@ -5,7 +5,9 @@
     <meta charset="utf-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+          integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+          crossorigin="anonymous"/>
     <title>Simple Dashboard</title>
     <style>
 
@@ -25,6 +27,16 @@
         }
 
         input {
+            border: 1px solid lightskyblue;
+        }
+
+
+        .welcome {
+            margin: auto;
+            width: 50%;
+            flex-direction: column;
+            text-align: center;
+            padding: 10px;
             border: 1px solid lightskyblue;
         }
 
@@ -91,12 +103,14 @@
             padding: 5px;
             margin: 5px;
         }
+
         .lds-ring {
             display: inline-block;
             position: relative;
             width: 80px;
             height: 80px;
         }
+
         .lds-ring div {
             box-sizing: border-box;
             display: block;
@@ -109,15 +123,19 @@
             animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
             border-color: midnightblue transparent transparent transparent;
         }
+
         .lds-ring div:nth-child(1) {
             animation-delay: -0.45s;
         }
+
         .lds-ring div:nth-child(2) {
             animation-delay: -0.3s;
         }
+
         .lds-ring div:nth-child(3) {
             animation-delay: -0.15s;
         }
+
         @keyframes lds-ring {
             0% {
                 transform: rotate(0deg);

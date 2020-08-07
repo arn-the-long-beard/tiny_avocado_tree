@@ -80,9 +80,15 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 /// view of register page
 pub fn view(model: &Model) -> Node<Msg> {
     match &model.request_state {
-        RequestState::Success(user) => {
-            p![format!("Thank you for {} ", user.credentials.username())]
-        }
+        RequestState::Success(user) => div![
+            C!["welcome"],
+            p![format!(
+                "Thank you for your registration {} {}",
+                user.first_name, user.last_name
+            )],
+            br![],
+            p!["You can now connect as ", user.credentials.username()]
+        ],
         RequestState::IsPending(status) => form(model, status),
         RequestState::Failed { message, code } => p![format!(
             "En error happened {} with the code {}",
