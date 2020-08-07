@@ -37,8 +37,8 @@ struct Model {
 #[derive(Default)]
 pub struct State {
     pub logged_user: pages::register::Model,
-    pub register_data: pages::register::Model,
-    pub auth_data: pages::login::Model,
+    pub register: pages::register::Model,
+    pub login: pages::login::Model,
 }
 
 /// Page Struct regroups all the possible root navigate on your App
@@ -107,10 +107,14 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         }
         Msg::Register(register_message) => pages::register::update(
             register_message,
-            &mut model.state.register_data,
+            &mut model.state.register,
             &mut orders.proxy(Msg::Register),
         ),
-        Msg::Login(_) => {}
+        Msg::Login(login_message) => pages::login::update(
+            login_message,
+            &mut model.state.login,
+            &mut orders.proxy(Msg::Login),
+        ),
     }
 }
 
@@ -125,10 +129,8 @@ fn view(model: &Model) -> impl IntoNodes<Msg> {
             Route::Home => div![div!["Welcome home!"],],
             // Page::Admin(admin_model) => page::admin::view(admin_model, &model.ctx),
             Route::NotFound => div!["404"],
-            Route::Login => pages::login::view(&model.state.auth_data).map_msg(Msg::Login),
-            Route::Register => {
-                pages::register::view(&model.state.register_data).map_msg(Msg::Register)
-            }
+            Route::Login => pages::login::view(&model.state.login).map_msg(Msg::Login),
+            Route::Register => pages::register::view(&model.state.register).map_msg(Msg::Register),
         },
     ]
 }
