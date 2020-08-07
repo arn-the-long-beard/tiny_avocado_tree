@@ -36,7 +36,6 @@ pub enum Msg {
 pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
         Msg::Register => {
-            log!("submit");
             model.request_state = RequestState::IsPending(true);
             let request = Request::new("/api/register")
                 .method(Method::Post)
