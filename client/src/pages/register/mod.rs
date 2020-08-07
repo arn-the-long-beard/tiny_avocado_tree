@@ -82,11 +82,20 @@ pub fn view(model: &Model) -> Node<Msg> {
         RequestState::Success(user) => div![
             C!["welcome"],
             p![format!(
-                "Thank you for your registration {} {}",
+                "Thank you for your registration {} {}. :)",
                 user.first_name, user.last_name
             )],
             br![],
-            p!["You can now connect as ", user.credentials.username()]
+            p![
+                span!["You can now "],
+                a![attrs! { At::Href => "./login" }, "login",],
+                span![" as ",],
+                span![
+                    style! {St::Color => "darkblue"},
+                    user.credentials.username(),
+                    "."
+                ]
+            ]
         ],
         RequestState::IsPending(status) => form(model, status),
         RequestState::Failed { message, code } => p![format!(
