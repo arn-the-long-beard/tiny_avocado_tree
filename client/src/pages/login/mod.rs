@@ -44,7 +44,7 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::Clear => {}
         Msg::LoginSucceed(logged_user) => {
             model.request_state = RequestState::Success(logged_user.clone());
-            orders.notify(RootMsg::UserLogged(logged_user.clone()));
+            orders.notify(logged_user.clone());
             log!("notify {:?}", logged_user.clone());
         }
         Msg::LoginFailed { message, code } => {
