@@ -1,7 +1,7 @@
 mod handlers;
 mod init;
 
-use crate::handlers::register;
+use crate::handlers::{auth, register};
 use crate::init::Init;
 use actix_files::{Files, NamedFile};
 use actix_identity::{CookieIdentityPolicy, IdentityService};
@@ -9,7 +9,6 @@ use actix_web::middleware::Logger;
 use actix_web::{web, App, FromRequest, HttpRequest, HttpServer, Responder, Result};
 use std::sync::Arc;
 
-mod auth;
 mod models;
 
 mod utils;
@@ -50,6 +49,7 @@ async fn main() -> std::io::Result<()> {
                     .service(
                         web::resource("/register").route(web::post().to(register::register_user)),
                     )
+                    .service(web::resource("/auth").route(web::post().to(auth::login)))
                     .default_service(web::route().to(web::HttpResponse::NotFound)),
             )
             .service(Files::new("/pkg", "../client/pkg"))

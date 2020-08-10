@@ -1,15 +1,12 @@
+use crate::handlers::secret::create_secret_key;
 use crate::models::error::ServiceError;
 use crate::models::error::ServiceError::BadRequest;
-use crate::models::roots::Roots;
 use crate::models::user::FullUser;
 use actix_web::{web, HttpResponse};
 use arangors::document::options::InsertOptions;
 use arangors::Connection;
-use rand::distributions::Alphanumeric;
-use rand::{thread_rng, Rng};
 use shared::models::power::Power;
 use shared::models::user::User;
-use std::iter;
 use std::sync::Arc;
 
 /// Register a user on the db
@@ -70,33 +67,4 @@ fn validate_and_unwrap(user: web::Json<User>) -> Result<User, ServiceError> {
     } else {
         Ok(user.into_inner())
     }
-}
-
-/// Create a secret key on an other db
-async fn create_secret_key(
-    connection: web::Data<Arc<Connection>>,
-    username: String,
-) -> Result<String, ServiceError> {
-    let database = connection.db("avocado_trunk").await.unwrap();
-    let collection = database.collection("roots").await.unwrap();
-    let secret = generate_key();
-    let roots = Roots::new(secret.clone(), username);
-    let new_key = collection
-        .create_document(roots, InsertOptions::builder().silent(true).build())
-        .await;
-
-    if new_key.is_ok() {
-        Ok(secret)
-    } else {
-        Err(ServiceError::InternalServerError)
-    }
-}
-fn generate_key() -> String {
-    let mut rng = thread_rng();
-    let chars: String = iter::repeat(())
-        .map(|()| rng.sample(Alphanumeric))
-        .take(45)
-        .collect();
-
-    chars.to_string()
 }
