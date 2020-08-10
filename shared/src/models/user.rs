@@ -1,6 +1,6 @@
 use crate::models::auth::AuthData;
 use serde::{Deserialize, Serialize};
-#[derive(Debug, Deserialize, Serialize, Default, Clone)]
+#[derive(Debug, Deserialize, Serialize, Default)]
 pub struct User {
     pub first_name: String,
     pub last_name: String,

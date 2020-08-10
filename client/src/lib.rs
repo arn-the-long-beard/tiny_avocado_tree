@@ -100,7 +100,7 @@ impl<'a> Urls<'a> {
 /// Root actions for your app.
 /// Each component will have single action/message mapped to its message later in update
 ///
-#[derive(Clone)]
+
 pub enum Msg {
     UrlChanged(subs::UrlChanged),
     Register(pages::register::Msg),
@@ -184,16 +184,6 @@ fn route(base_url: &Url, page: &Route, path: &str) -> Node<Msg> {
 
 fn authenticated_header(base_url: &Url, page: &Route) -> Node<Msg> {
     ul![route(base_url, page, "Dashboard"),]
-}
-fn authenticated_route(base_url: &Url, page: &Route, path: &str) -> Node<Msg> {
-    li![a![
-        C![
-            "route",
-            IF!(page.is_active( path.to_string() ) => "active-route" )
-        ],
-        attrs! { At::Href => Urls::new(base_url).build_url(path) },
-        path,
-    ]]
 }
 // ------ ------
 //     Start

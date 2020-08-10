@@ -9,7 +9,7 @@ pub struct Model {
     credentials: LoginCredentials,
     request_state: RequestState<LoggedUser>,
 }
-#[derive(Clone)]
+
 pub enum Msg {
     Login,
     LoginSucceed(LoggedUser),
