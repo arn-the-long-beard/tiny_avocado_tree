@@ -16,8 +16,8 @@ impl Power {
         match nb {
             0 => Power::NoPower,
             1..=10 => Power::BabyPower(nb),
-            11..=25 => Power::LowPower(nb),
-            26..=100 => Power::MediumPower(nb),
+            11..=50 => Power::LowPower(nb),
+            51..=100 => Power::MediumPower(nb),
             101..=200 => Power::HighPower(nb),
             201..=255 => Power::MaxPower(nb),
             _ => Power::NoPower,
@@ -66,7 +66,7 @@ impl Power {
                 power += 1;
             }
             if c.is_uppercase() {
-                power += 1;
+                power += 2;
             }
             if c.is_ascii_punctuation() {
                 power += 2;
@@ -75,7 +75,7 @@ impl Power {
             if count == 1 {
                 power += 4;
             } else if (count > 1) & (count < 3) {
-                power += 2;
+                power += 3;
             } else {
                 power -= 1;
             }
