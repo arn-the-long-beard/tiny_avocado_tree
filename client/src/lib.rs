@@ -2,23 +2,27 @@ mod request;
 use seed::{prelude::*, *};
 extern crate heck;
 use heck::SnakeCase;
+use shared::models::user::LoggedUser;
+
 // use shared::User;
 mod pages;
 
 const ADMIN: &str = "admin";
 const LOGIN: &str = "login";
 const REGISTER: &str = "register";
-
+const DASHBOARD: &str = "dashboard";
 // ------ ------
 //     Init
 // ------ ------
 
 fn init(url: Url, orders: &mut impl Orders<Msg>) -> Model {
-    orders.subscribe(Msg::UrlChanged);
+    orders.subscribe(Msg::UrlChanged).subscribe(Msg::UserLogged);
+
     Model {
         state: Default::default(),
         base_url: url.to_base_url(),
         page: Route::init(url),
+        logged_user: None,
     }
 }
 
@@ -29,13 +33,13 @@ fn init(url: Url, orders: &mut impl Orders<Msg>) -> Model {
 struct Model {
     state: State,
     base_url: Url,
+    logged_user: Option<LoggedUser>,
     page: Route,
 }
 
 // ------ State for component ------
 #[derive(Default)]
 pub struct State {
-    pub logged_user: pages::register::Model,
     pub register: pages::register::Model,
     pub login: pages::login::Model,
 }
@@ -46,6 +50,7 @@ enum Route {
     Home,
     Login,
     Register,
+    Dashboard,
     // Admin(page::admin::Model),
     NotFound,
 }
@@ -57,6 +62,7 @@ impl Route {
             None => Self::Home,
             Some(LOGIN) => Self::Login,
             Some(REGISTER) => Self::Register,
+            Some(DASHBOARD) => Self::Dashboard,
             Some(_) => Self::NotFound,
         }
     }
@@ -66,6 +72,7 @@ impl Route {
             Route::Home => path.eq("Home"),
             Route::Login => path.eq("Login"),
             Route::Register => path.eq("Register"),
+            Route::Dashboard => path.eq("Dashboard"),
             Route::NotFound => path.eq("404"),
         }
     }
@@ -92,10 +99,13 @@ impl<'a> Urls<'a> {
 // ------ ------
 /// Root actions for your app.
 /// Each component will have single action/message mapped to its message later in update
-enum Msg {
+///
+#[derive(Clone)]
+pub enum Msg {
     UrlChanged(subs::UrlChanged),
     Register(pages::register::Msg),
     Login(pages::login::Msg),
+    UserLogged(LoggedUser),
 }
 
 /// Main update for the entire APP, every component action/message should me mapped there because of single truth of path
@@ -114,6 +124,10 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             &mut model.state.login,
             &mut orders.proxy(Msg::Login),
         ),
+        Msg::UserLogged(user) => {
+            log!("got user logged");
+            model.logged_user = Some(user)
+        }
     }
 }
 
@@ -122,16 +136,31 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 // ------ ------
 /// View function which renders stuff to html
 fn view(model: &Model) -> impl IntoNodes<Msg> {
-    vec![
-        header(&model.base_url, &model.page),
-        match &model.page {
-            Route::Home => div![div!["Welcome home!"],],
-            // Page::Admin(admin_model) => page::admin::view(admin_model, &model.ctx),
-            Route::NotFound => div!["404"],
-            Route::Login => pages::login::view(&model.state.login).map_msg(Msg::Login),
-            Route::Register => pages::register::view(&model.state.register).map_msg(Msg::Register),
-        },
-    ]
+    if model.logged_user.is_none() {
+        vec![
+            header(&model.base_url, &model.page),
+            match &model.page {
+                Route::Home => div![div!["Welcome home!"],],
+                // Page::Admin(admin_model) => page::admin::view(admin_model, &model.ctx),
+                Route::NotFound => div!["404"],
+                Route::Login => pages::login::view(&model.state.login).map_msg(Msg::Login),
+                Route::Register => {
+                    pages::register::view(&model.state.register).map_msg(Msg::Register)
+                }
+                _ => div!["404"],
+            },
+        ]
+    } else {
+        vec![
+            authenticated_header(&model.base_url, &model.page),
+            match &model.page {
+                Route::Dashboard => div![div!["Welcome Dashboard!"],],
+                // Page::Admin(admin_model) => page::admin::view(admin_model, &model.ctx),
+                Route::NotFound => div!["404"],
+                _ => div!["404"],
+            },
+        ]
+    }
 }
 
 fn header(base_url: &Url, page: &Route) -> Node<Msg> {
@@ -143,6 +172,20 @@ fn header(base_url: &Url, page: &Route) -> Node<Msg> {
 }
 /// Render a route
 fn route(base_url: &Url, page: &Route, path: &str) -> Node<Msg> {
+    li![a![
+        C![
+            "route",
+            IF!(page.is_active( path.to_string() ) => "active-route" )
+        ],
+        attrs! { At::Href => Urls::new(base_url).build_url(path) },
+        path,
+    ]]
+}
+
+fn authenticated_header(base_url: &Url, page: &Route) -> Node<Msg> {
+    ul![route(base_url, page, "Dashboard"),]
+}
+fn authenticated_route(base_url: &Url, page: &Route, path: &str) -> Node<Msg> {
     li![a![
         C![
             "route",

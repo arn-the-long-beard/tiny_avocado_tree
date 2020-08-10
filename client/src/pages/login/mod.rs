@@ -1,4 +1,5 @@
 use crate::request::RequestState;
+use crate::Msg as RootMsg;
 use seed::{prelude::*, *};
 use shared::models::auth::LoginCredentials;
 use shared::models::user::LoggedUser;
@@ -8,7 +9,7 @@ pub struct Model {
     credentials: LoginCredentials,
     request_state: RequestState<LoggedUser>,
 }
-
+#[derive(Clone)]
 pub enum Msg {
     Login,
     LoginSucceed(LoggedUser),
@@ -41,12 +42,14 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             });
         }
         Msg::Clear => {}
-        Msg::LoginSucceed(logged_user) => model.request_state = RequestState::Success(logged_user),
+        Msg::LoginSucceed(logged_user) => {
+            model.request_state = RequestState::Success(logged_user.clone());
+            orders.notify(RootMsg::UserLogged(logged_user));
+        }
         Msg::LoginFailed { message, code } => {
             model.request_state = RequestState::Failed { message, code }
         }
         Msg::PasswordChanged(pwd) => {
-            log!(pwd);
             model.credentials.set_password(pwd);
         }
         Msg::TargetChanged(target) => model.credentials.set_target(target),

@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-#[derive(Debug, Deserialize, Serialize, Default)]
+#[derive(Debug, Deserialize, Serialize, Default, Clone)]
 /// Base Credential used for user authentication
 pub struct AuthData {
     email: String,

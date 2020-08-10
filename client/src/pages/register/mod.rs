@@ -11,6 +11,7 @@ pub struct Model {
 }
 
 /// Action on register page
+#[derive(Clone)]
 pub enum Msg {
     Register,
     RegisterFailed { message: String, code: String },
