@@ -1,8 +1,5 @@
-use std::convert::From;
-
 use actix_web::{error::ResponseError, HttpResponse};
 use derive_more::Display;
-use uuid::parser::ParseError;
 
 #[derive(Debug, Display)]
 pub enum ServiceError {

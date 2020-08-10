@@ -32,3 +32,26 @@ impl AuthData {
         self.username.as_str()
     }
 }
+
+#[derive(Debug, Deserialize, Serialize, Default)]
+pub struct LoginCredentials {
+    target: String,
+    password: String,
+}
+
+impl LoginCredentials {
+    pub fn target(&self) -> &str {
+        &self.target
+    }
+
+    pub fn password(&self) -> &str {
+        &self.password
+    }
+    /// Set email or username
+    pub fn set_target(&mut self, target: String) {
+        self.target = target;
+    }
+    pub fn set_password(&mut self, password: String) {
+        self.password = password;
+    }
+}

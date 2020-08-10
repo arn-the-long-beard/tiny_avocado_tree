@@ -1,7 +1,7 @@
 use crate::utils::password::hash_password;
 use serde::{Deserialize, Serialize};
 use shared::models::auth::AuthData;
-use shared::models::user::User;
+use shared::models::user::{LoggedUser, User};
 
 /// Full user model exclusive to back end
 #[derive(Serialize, Deserialize)]
@@ -38,5 +38,18 @@ impl FullUser {
             last_name: (&self.last_name).to_string(),
             credentials: info_cred,
         }
+    }
+
+    pub fn hash(&self) -> &str {
+        &self.hash
+    }
+
+    pub fn to_logged_user(&self) -> LoggedUser {
+        LoggedUser::new(
+            (&self.first_name).to_string(),
+            (&self.last_name).to_string(),
+            (&self.username).to_string(),
+            (&self.emails.first().unwrap()).to_string(),
+        )
     }
 }
