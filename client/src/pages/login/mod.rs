@@ -28,6 +28,7 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                 .json(&model.credentials)
                 .expect("Serialization failed");
 
+            model.credentials.set_password("".to_string());
             orders.perform_cmd(async {
                 let response = fetch(request).await.expect("HTTP request failed");
 
