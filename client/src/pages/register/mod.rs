@@ -32,7 +32,7 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                 .method(Method::Post)
                 .json(&model.user)
                 .expect("Serialization failed");
-
+            model.user.credentials.set_password("".to_string());
             orders.perform_cmd(async {
                 let response = fetch(request).await.expect("HTTP request failed");
 
