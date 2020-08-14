@@ -55,7 +55,17 @@ pub async fn read_secret_key(
 
     if res.is_ok() {
         //todo add a check if many maybe ?
-        Ok(res.unwrap().pop().unwrap())
+        let mut vec = res.unwrap();
+
+        let secret = vec.pop();
+
+        if secret.is_none() {
+            Err(ServiceError::BadRequest(
+                "Your credentials are wrong".to_string(),
+            ))
+        } else {
+            Ok(secret.unwrap())
+        }
     } else {
         let err = res.unwrap_err();
         eprintln!("Error happened :{:?}", err);
