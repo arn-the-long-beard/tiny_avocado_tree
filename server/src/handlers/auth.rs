@@ -16,8 +16,14 @@ pub async fn login(
     connection: web::Data<Arc<Connection>>,
     id: Identity,
 ) -> Result<HttpResponse, ServiceError> {
-    let database = connection.db("tiny_avocado_tree").await.unwrap();
-    let collection = database.collection("users").await.unwrap();
+    let database = connection
+        .db("tiny_avocado_tree")
+        .await
+        .expect("Should load the collection");
+    let collection = database
+        .collection("users")
+        .await
+        .expect("Should load the collection");
 
     let mut map = HashMap::new();
     map.insert(

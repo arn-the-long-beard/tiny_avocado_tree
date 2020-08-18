@@ -23,9 +23,16 @@ pub async fn register_user(
     }
     let user = user.unwrap();
 
-    let database = connection.db("tiny_avocado_tree").await.unwrap(); //todo replace with map + ?
+    let database = connection
+        .db("tiny_avocado_tree")
+        .await
+        .expect("Should load the db");
 
-    let collection = database.collection("users").await.unwrap();
+    let collection = database
+        .collection("users")
+        .await
+        .expect("Should load the collection");
+
     // todo add global secret so to have control to validate or invalidate
     let secret = create_secret_key(connection, user.credentials.username().to_string()).await;
 

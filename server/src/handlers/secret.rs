@@ -14,8 +14,14 @@ pub async fn create_secret_key(
     connection: web::Data<Arc<Connection>>,
     username: String,
 ) -> Result<String, ServiceError> {
-    let database = connection.db("avocado_trunk").await.unwrap();
-    let collection = database.collection("roots").await.unwrap();
+    let database = connection
+        .db("avocado_trunk")
+        .await
+        .expect("Should load the collection");
+    let collection = database
+        .collection("roots")
+        .await
+        .expect("Should load the collection");
     let secret = generate_key();
     let roots = Roots::new(secret.clone(), username);
     let new_key = collection
