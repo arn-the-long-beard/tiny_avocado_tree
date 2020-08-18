@@ -15,7 +15,6 @@ actix-identity = "0.2.0"
 actix-files = "0.2.2"
 env_logger = "0.7.1"
 rand = "0.7.3"
-dotenv = "0.15.0"
 serde = "1.0.106"
 serde_json = "1.0.51"
 chrono = { version = "0.4.6", features = ["serde"] }
