@@ -89,6 +89,11 @@ impl<Ms: 'static> TopBar<Ms> {
 
         let content = self.title.take().map(Node::new_text);
 
+        // if content.is_some() {
+        //     let mut node = content.unwrap();
+        //     node.add_style(St::TextAlign, "center");
+        // }
+
         let attrs = {
             let mut attrs = attrs! {};
 
@@ -118,11 +123,16 @@ impl<Ms: 'static> TopBar<Ms> {
             if self.outline {
                 css.merge(style! {
                     St::Color => color,
+
                     St::BackgroundColor => "transparent",
                     St::Border => format!("{} {} {}", px(2), "solid", color),
                 });
             } else {
-                css.merge(style! { St::Color => font_color, St::BackgroundColor => color });
+                css.merge(style! { St::Color => font_color,
+                St::Display => "flex",
+                St::AlignItems => "center",
+                St::JustifyContent=> "center" ,
+                St::BackgroundColor => color });
             };
 
             if self.block {
