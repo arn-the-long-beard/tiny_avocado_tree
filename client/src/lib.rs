@@ -1,11 +1,15 @@
 mod request;
 use seed::{prelude::*, *};
 extern crate heck;
+use crate::theme::Theme;
+use crate::top_bar::TopBar;
 use heck::SnakeCase;
 use shared::models::user::LoggedUser;
 
 // use shared::User;
 mod pages;
+mod theme;
+mod top_bar;
 
 const ADMIN: &str = "admin";
 const LOGIN: &str = "login";
@@ -19,6 +23,7 @@ fn init(url: Url, orders: &mut impl Orders<Msg>) -> Model {
     orders.subscribe(Msg::UrlChanged).subscribe(Msg::UserLogged);
 
     Model {
+        theme: Theme::default(),
         state: Default::default(),
         base_url: url.to_base_url(),
         page: Route::init(url),
@@ -35,6 +40,7 @@ struct Model {
     base_url: Url,
     logged_user: Option<LoggedUser>,
     page: Route,
+    theme: Theme,
 }
 
 // ------ State for component ------
@@ -106,6 +112,7 @@ pub enum Msg {
     Register(pages::register::Msg),
     Login(pages::login::Msg),
     UserLogged(LoggedUser),
+    SwitchToTheme(Theme),
 }
 
 /// Main update for the entire APP, every component action/message should me mapped there because of single truth of path
@@ -131,6 +138,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                 Urls::new(&model.base_url).build_url(DASHBOARD),
             ));
         }
+        Msg::SwitchToTheme(theme) => model.theme = theme,
     }
 }
 
@@ -141,9 +149,9 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 fn view(model: &Model) -> impl IntoNodes<Msg> {
     if model.logged_user.is_none() {
         vec![
-            header(&model.base_url, &model.page),
+            header(&model),
             match &model.page {
-                Route::Home => div![div!["Welcome home!"],],
+                Route::Home => home(&model.theme),
                 // Page::Admin(admin_model) => page::admin::view(admin_model, &model.ctx),
                 Route::NotFound => div!["404"],
                 Route::Login => pages::login::view(&model.state.login).map_msg(Msg::Login),
@@ -166,11 +174,16 @@ fn view(model: &Model) -> impl IntoNodes<Msg> {
     }
 }
 
-fn header(base_url: &Url, page: &Route) -> Node<Msg> {
-    ul![
-        route(base_url, page, "Home"),
-        route(base_url, page, "Login"),
-        route(base_url, page, "Register"),
+fn header(model: &Model) -> Node<Msg> {
+    let page = &model.page;
+    let base_url = &model.base_url;
+    div![
+        TopBar::new("Welcome Guest", model.theme.clone()),
+        ul![
+            route(base_url, page, "Home"),
+            route(base_url, page, "Login"),
+            route(base_url, page, "Register"),
+        ]
     ]
 }
 /// Render a route
@@ -187,6 +200,26 @@ fn route(base_url: &Url, page: &Route, path: &str) -> Node<Msg> {
 
 fn authenticated_header(base_url: &Url, page: &Route) -> Node<Msg> {
     ul![route(base_url, page, "Dashboard"),]
+}
+
+fn home(theme: &Theme) -> Node<Msg> {
+    div![
+        div!["Welcome home!"],
+        match theme {
+            Theme::Dark => {
+                button![
+                    "Switch to Light",
+                    ev(Ev::Click, |_| Msg::SwitchToTheme(Theme::Light))
+                ]
+            }
+            Theme::Light => {
+                button![
+                    "Switch to Dark",
+                    ev(Ev::Click, |_| Msg::SwitchToTheme(Theme::Dark))
+                ]
+            }
+        }
+    ]
 }
 // ------ ------
 //     Start
