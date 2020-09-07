@@ -126,7 +126,10 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         ),
         Msg::UserLogged(user) => {
             log!("got user logged");
-            model.logged_user = Some(user)
+            model.logged_user = Some(user);
+            orders.notify(subs::UrlRequested::new(
+                Urls::new(&model.base_url).build_url(DASHBOARD),
+            ));
         }
     }
 }
