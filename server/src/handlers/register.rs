@@ -1,12 +1,13 @@
-use crate::handlers::secret::create_secret_key;
-use crate::models::error::ServiceError;
-use crate::models::error::ServiceError::BadRequest;
-use crate::models::user::FullUser;
+use crate::{
+    handlers::secret::create_secret_key,
+    models::{
+        error::{ServiceError, ServiceError::BadRequest},
+        user::FullUser,
+    },
+};
 use actix_web::{web, HttpResponse};
-use arangors::document::options::InsertOptions;
-use arangors::Connection;
-use shared::models::power::Power;
-use shared::models::user::User;
+use arangors::{document::options::InsertOptions, Connection};
+use shared::models::{power::Power, user::User};
 use std::sync::Arc;
 
 /// Register a user on the db

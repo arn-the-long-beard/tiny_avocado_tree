@@ -1,8 +1,7 @@
 mod request;
 use seed::{prelude::*, *};
 extern crate heck;
-use crate::theme::Theme;
-use crate::top_bar::TopBar;
+use crate::{theme::Theme, top_bar::TopBar};
 use heck::SnakeCase;
 use shared::models::user::LoggedUser;
 
@@ -61,7 +60,6 @@ enum Route {
     NotFound,
 }
 /// Here we manage the navigation depending of the url path
-///
 impl Route {
     fn init(mut url: Url) -> Self {
         match url.next_path_part() {
@@ -104,8 +102,8 @@ impl<'a> Urls<'a> {
 //    Update
 // ------ ------
 /// Root actions for your app.
-/// Each component will have single action/message mapped to its message later in update
-///
+/// Each component will have single action/message mapped to its message later
+/// in update
 
 pub enum Msg {
     UrlChanged(subs::UrlChanged),
@@ -115,7 +113,8 @@ pub enum Msg {
     SwitchToTheme(Theme),
 }
 
-/// Main update for the entire APP, every component action/message should me mapped there because of single truth of path
+/// Main update for the entire APP, every component action/message should me
+/// mapped there because of single truth of path
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
         Msg::UrlChanged(subs::UrlChanged(url)) => {

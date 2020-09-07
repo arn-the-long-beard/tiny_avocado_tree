@@ -1,8 +1,6 @@
-use crate::request::RequestState;
-use crate::Msg as RootMsg;
+use crate::{request::RequestState, Msg as RootMsg};
 use seed::{prelude::*, *};
-use shared::models::auth::LoginCredentials;
-use shared::models::user::LoggedUser;
+use shared::models::{auth::LoginCredentials, user::LoggedUser};
 
 #[derive(Default)]
 pub struct Model {

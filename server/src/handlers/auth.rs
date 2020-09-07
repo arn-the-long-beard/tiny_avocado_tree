@@ -1,15 +1,11 @@
 use crate::models::error::ServiceError;
 use actix_web::{web, HttpResponse, ResponseError};
 
-use crate::handlers::secret::read_secret_key;
-use crate::models::user::FullUser;
-use crate::utils::password::verify;
+use crate::{handlers::secret::read_secret_key, models::user::FullUser, utils::password::verify};
 use actix_identity::Identity;
 use arangors::{ClientError, Connection};
-use shared::models::auth::LoginCredentials;
-use shared::models::user::User;
-use std::collections::HashMap;
-use std::sync::Arc;
+use shared::models::{auth::LoginCredentials, user::User};
+use std::{collections::HashMap, sync::Arc};
 
 pub async fn login(
     auth_data: web::Json<LoginCredentials>,

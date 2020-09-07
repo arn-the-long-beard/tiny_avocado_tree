@@ -1,7 +1,6 @@
 use crate::request::RequestState;
 use seed::{prelude::*, *};
-use shared::models::power::Power;
-use shared::models::user::User;
+use shared::models::{power::Power, user::User};
 
 #[derive(Default)]
 pub struct Model {

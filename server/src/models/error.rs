@@ -13,7 +13,8 @@ pub enum ServiceError {
     Unauthorized,
 }
 
-// impl ResponseError trait allows to convert our errors into http responses with appropriate data
+// impl ResponseError trait allows to convert our errors into http responses
+// with appropriate data
 impl ResponseError for ServiceError {
     fn error_response(&self) -> HttpResponse {
         match self {
@@ -26,8 +27,8 @@ impl ResponseError for ServiceError {
     }
 }
 
-// // we can return early in our handlers if UUID provided by the user is not valid
-// // and provide a custom message
+// // we can return early in our handlers if UUID provided by the user is not
+// valid // and provide a custom message
 // impl From<ParseError> for ServiceError {
 //     fn from(_: ParseError) -> ServiceError {
 //         ServiceError::BadRequest("Invalid UUID".into())

@@ -4,7 +4,6 @@ impl Default for Theme {
     }
 }
 /// Theme for the App.
-///
 #[derive(Clone)]
 pub enum Theme {
     Light,

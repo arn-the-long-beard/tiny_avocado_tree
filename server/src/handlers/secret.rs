@@ -1,13 +1,8 @@
-use crate::models::error::ServiceError;
-use crate::models::roots::Roots;
+use crate::models::{error::ServiceError, roots::Roots};
 use actix_web::web;
-use arangors::document::options::InsertOptions;
-use arangors::{ClientError, Connection};
-use rand::distributions::Alphanumeric;
-use rand::{thread_rng, Rng};
-use std::collections::HashMap;
-use std::iter;
-use std::sync::Arc;
+use arangors::{document::options::InsertOptions, ClientError, Connection};
+use rand::{distributions::Alphanumeric, thread_rng, Rng};
+use std::{collections::HashMap, iter, sync::Arc};
 
 /// Create a secret key on an other db
 pub async fn create_secret_key(

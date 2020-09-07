@@ -4,7 +4,8 @@ use std::borrow::Cow;
 use crate::theme::Theme;
 use web_sys::HtmlElement;
 
-/// The top bar is the component used for navigation, user actions and title located on the top of the applicatiob
+/// The top bar is the component used for navigation, user actions and title
+/// located on the top of the applicatiob
 pub struct TopBar<Ms: 'static> {
     title: Option<Cow<'static, str>>,
     style: Theme,

@@ -1,12 +1,15 @@
 mod handlers;
 mod init;
 
-use crate::handlers::{auth, register};
-use crate::init::Init;
+use crate::{
+    handlers::{auth, register},
+    init::Init,
+};
 use actix_files::{Files, NamedFile};
 use actix_identity::{CookieIdentityPolicy, IdentityService};
-use actix_web::middleware::Logger;
-use actix_web::{web, App, FromRequest, HttpRequest, HttpServer, Responder, Result};
+use actix_web::{
+    middleware::Logger, web, App, FromRequest, HttpRequest, HttpServer, Responder, Result,
+};
 use std::sync::Arc;
 
 mod models;
@@ -35,7 +38,8 @@ async fn main() -> std::io::Result<()> {
                     .path("/")
                     .domain(domain.as_str())
                     .max_age_time(chrono::Duration::days(1))
-                    .secure(false), // this can only be true if you have https todo put to true in production
+                    .secure(false), /* this can only be true if you have https todo put to true
+                                     * in production */
             ))
             .wrap(Logger::new("%r %s %D ms %a"))
             .data(web::JsonConfig::default().limit(4096))

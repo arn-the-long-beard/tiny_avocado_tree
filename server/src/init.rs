@@ -1,10 +1,11 @@
 use arangors::Connection;
 use env_logger::Env;
-use rustls::internal::pemfile::{certs, pkcs8_private_keys};
-use rustls::{NoClientAuth, ServerConfig};
+use rustls::{
+    internal::pemfile::{certs, pkcs8_private_keys},
+    NoClientAuth, ServerConfig,
+};
 use serde::Deserialize;
-use std::fs::File;
-use std::io::BufReader;
+use std::{fs::File, io::BufReader};
 /// Struct to init variable for config for server
 #[derive(Default, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
@@ -26,9 +27,9 @@ pub struct Init {
     /// how many workers to run the web server with
     workers: usize,
     /// The different mode for the server -> dev, test, staging, production
-    /// in dev & test, front end is compiled with debug mode active, same on backend of compiled code
-    /// in test, same as dev but with production data
-    /// in staging, we have production data, & production build
+    /// in dev & test, front end is compiled with debug mode active, same on
+    /// backend of compiled code in test, same as dev but with production
+    /// data in staging, we have production data, & production build
     /// in production,  the code is actually used by our customers
     mode: String,
 }
@@ -60,7 +61,8 @@ impl Init {
         &self.domain
     }
     pub fn build_ssl_config(&self) -> ServerConfig {
-        // todo this looks like good stuff but need to spend more time to make better config
+        // todo this looks like good stuff but need to spend more time to make better
+        // config
         let mut config = ServerConfig::new(NoClientAuth::new());
         let cert_file = &mut BufReader::new(
             File::open(&self.public_certificate_path).expect("should have open certificate"),

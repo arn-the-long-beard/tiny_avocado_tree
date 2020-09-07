@@ -1,7 +1,9 @@
 use crate::utils::password::hash_password;
 use serde::{Deserialize, Serialize};
-use shared::models::auth::AuthData;
-use shared::models::user::{LoggedUser, User};
+use shared::models::{
+    auth::AuthData,
+    user::{LoggedUser, User},
+};
 
 /// Full user model exclusive to back end
 #[derive(Serialize, Deserialize)]
