@@ -20,7 +20,6 @@ pub struct TopBar<Ms: 'static> {
 
 impl<Ms: 'static> TopBar<Ms> {
     pub fn new(title: impl Into<Cow<'static, str>>, theme: Theme) -> Self {
-        log!("new");
         Self::default().title(title).style(theme)
     }
 
