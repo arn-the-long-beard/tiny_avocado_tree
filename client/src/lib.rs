@@ -178,7 +178,7 @@ fn header(model: &Model) -> Node<Msg> {
     let page = &model.page;
     let base_url = &model.base_url;
     div![
-        TopBar::new("Welcome Guest", model.theme.clone()),
+        TopBar::new("Welcome Guest").style(model.theme.clone()),
         ul![
             route(base_url, page, "Home"),
             route(base_url, page, "Login"),

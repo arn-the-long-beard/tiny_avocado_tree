@@ -19,8 +19,8 @@ pub struct TopBar<Ms: 'static> {
 }
 
 impl<Ms: 'static> TopBar<Ms> {
-    pub fn new(title: impl Into<Cow<'static, str>>, theme: Theme) -> Self {
-        Self::default().title(title).style(theme)
+    pub fn new(title: impl Into<Cow<'static, str>>) -> Self {
+        Self::default().title(title)
     }
 
     pub fn title(mut self, title: impl Into<Cow<'static, str>>) -> Self {
@@ -30,7 +30,7 @@ impl<Ms: 'static> TopBar<Ms> {
 
     // --- style ---
 
-    const fn style(mut self, style: Theme) -> Self {
+    pub const fn style(mut self, style: Theme) -> Self {
         self.style = style;
         self
     }
