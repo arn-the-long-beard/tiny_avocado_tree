@@ -12,16 +12,17 @@ crate-type = ["cdylib" ,"rlib"]
 seed = { git = "https://github.com/seed-rs/seed", rev = "0a538f0" }
 shared = { path = "../shared" }
 heck="0.3.1"
-
+enum-map = "0.6.3"
 [dependencies.web-sys]
 version = "0.3"
 
 
 [dev-dependencies]
-wasm-bindgen-test = "0.3"
+wasm-bindgen-test = "0.3.17"
 
 [profile.release]
 lto = true
+
 opt-level = 'z'
 codegen-units = 1
 
